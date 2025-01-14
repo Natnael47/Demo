@@ -65,6 +65,9 @@ const payment = async (req, res) => {
     // Trigger the lottery save function after the payment session is created
     verifyPaymentAndSaveLottery();
 
+    // Log the lottery number if success is true
+    console.log("Lottery Number:", lotteryNumber);
+
     res.json({ success: true, session_url: session.url });
   } catch (error) {
     console.error("Error in payment: ", error);

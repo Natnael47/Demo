@@ -172,6 +172,9 @@ const payment = async (req, res) => {
     });
     await lotteryEntry.save();
 
+    // Log the lottery number if success is true
+    console.log("Lottery Number:", lotteryNumber);
+
     res.json({
       success: true,
       message: "Payment successful. Lottery number generated.",

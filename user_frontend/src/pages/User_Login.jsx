@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useContext, useState } from "react";
 import { backendUrl } from "../App";
+import { assets } from "../assets/assets";
 import { Context } from "../context/context";
 
 const User_Login = () => {
@@ -37,7 +38,7 @@ const User_Login = () => {
 
             if (response.data.success) {
                 setToken(response.data.token);
-                localStorage.setItem('token', response.data.token);
+                localStorage.setItem("token", response.data.token);
                 setMessage(`${currState} successful!`);
             } else {
                 setMessage(response.data.message);
@@ -51,13 +52,13 @@ const User_Login = () => {
         <div className="flex justify-center items-center min-h-screen bg-gray-100">
             <form
                 onSubmit={onSubmitHandler}
-                className="w-full max-w-md p-8 bg-white shadow-lg rounded-lg"
+                className="w-full max-w-md p-8 bg-[#FAFAFA] shadow-lg rounded-lg"
             >
+                <img src={assets.logo} className="w-60 mx-auto mb-6" alt="Logo" />
                 <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">
                     {currState === "Login" ? "Welcome Back!" : "Create an Account"}
                 </h2>
 
-                {/* Name field only visible in Sign Up mode */}
                 {currState === "Sign Up" && (
                     <div className="mb-4">
                         <label
@@ -73,13 +74,12 @@ const User_Login = () => {
                             value={data.user_Name}
                             onChange={onChangeHandler}
                             placeholder="Enter your name"
-                            className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                            className="mt-1 w-full px-4 py-2 border-2 border-purple-500 rounded-lg focus:ring-purple-500 focus:border-purple-500"
                             required
                         />
                     </div>
                 )}
 
-                {/* Email field only visible in Sign Up mode */}
                 {currState === "Sign Up" && (
                     <div className="mb-4">
                         <label
@@ -95,13 +95,12 @@ const User_Login = () => {
                             value={data.user_Email}
                             onChange={onChangeHandler}
                             placeholder="Enter your email"
-                            className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                            className="mt-1 w-full px-4 py-2 border-2 border-purple-500 rounded-lg focus:ring-purple-500 focus:border-purple-500"
                             required
                         />
                     </div>
                 )}
 
-                {/* Phone field */}
                 <div className="mb-4">
                     <label
                         htmlFor="user_Phone"
@@ -116,12 +115,11 @@ const User_Login = () => {
                         value={data.user_Phone}
                         onChange={onChangeHandler}
                         placeholder="Enter your phone number"
-                        className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                        className="mt-1 w-full px-4 py-2 border-2 border-purple-500 rounded-lg focus:ring-purple-500 focus:border-purple-500"
                         required
                     />
                 </div>
 
-                {/* Password field */}
                 <div className="mb-4">
                     <label
                         htmlFor="user_Password"
@@ -136,25 +134,22 @@ const User_Login = () => {
                         value={data.user_Password}
                         onChange={onChangeHandler}
                         placeholder="Enter your password"
-                        className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                        className="mt-1 w-full px-4 py-2 border-2 border-purple-500 rounded-lg focus:ring-purple-500 focus:border-purple-500"
                         required
                     />
                 </div>
 
-                {/* Submit button */}
                 <button
                     type="submit"
-                    className="w-full py-2 px-4 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition duration-200"
+                    className="w-full py-2 px-4 bg-[#BA8E4F] text-white rounded-lg hover:bg-[#A6783E] transition duration-200"
                 >
                     {currState === "Sign Up" ? "Sign Up" : "Login"}
                 </button>
 
-                {/* Message display */}
                 {message && (
                     <p className="mt-4 text-center text-red-500 text-sm">{message}</p>
                 )}
 
-                {/* Toggle form state */}
                 <p className="mt-6 text-center text-gray-600">
                     {currState === "Login" ? (
                         <>
@@ -183,4 +178,4 @@ const User_Login = () => {
     );
 };
 
-export default User_Login
+export default User_Login;

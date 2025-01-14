@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useContext, useState } from "react";
 import { backendUrl } from "../App";
+import { assets } from "../assets/assets";
 import { Context } from "../context/context";
 
 const Login = () => {
@@ -48,11 +49,12 @@ const Login = () => {
     };
 
     return (
-        <div className="flex justify-center items-center min-h-screen bg-gray-100">
+        <div className="flex justify-center items-center min-h-screen bg-black">
             <form
                 onSubmit={onSubmitHandler}
                 className="w-full max-w-md p-8 bg-white shadow-lg rounded-lg"
             >
+                <img src={assets.logo} alt="" />
                 <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">
                     {currState === "Login" ? "Welcome Back!" : "Create an Account"}
                 </h2>
