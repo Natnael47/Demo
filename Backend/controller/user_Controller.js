@@ -274,8 +274,42 @@ const getUserLotteryNumbers = async (req, res) => {
   }
 };
 
+// Fetch all lottery numbers ordered by creation date
+const getAllLotteryNumbers = async (req, res) => {
+  try {
+    // Fetch all lottery numbers ordered by 'createdAt' field in ascending order
+    const lotteryNumbers = await LotteryModel.find().sort({ createdAt: 1 });
+
+    if (lotteryNumbers.length === 0) {
+      return res.json({
+        success: false,
+        message: "No lottery numbers found.",
+      });
+    }
+
+    // Format the response to include lottery numbers and their creation dates
+    const numbers = lotteryNumbers.map((entry) => ({
+      lotteryNumber: entry.lottery_number,
+      createdAt: entry.createdAt,
+    }));
+
+    res.json({
+      success: true,
+      message: "Lottery numbers fetched successfully.",
+      data: numbers,
+    });
+  } catch (error) {
+    console.error("Error fetching lottery numbers:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch lottery numbers.",
+    });
+  }
+};
+
 export {
   checkUserTerm,
+  getAllLotteryNumbers,
   getUserLotteryNumbers,
   loginUser,
   payment,
