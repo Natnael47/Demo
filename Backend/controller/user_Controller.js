@@ -274,11 +274,33 @@ const getUserLotteryNumbers = async (req, res) => {
   }
 };
 
-// Fetch all lottery numbers ordered by creation date
-const getAllLotteryNumbers = async (req, res) => {
+// Fetch all lottery numbers with associated user names, ordered by creation date
+const getAllLotteryNumbersWithUsernames = async (req, res) => {
   try {
-    // Fetch all lottery numbers ordered by 'createdAt' field in ascending order
-    const lotteryNumbers = await LotteryModel.find().sort({ createdAt: 1 });
+    // Use aggregation to join the LotteryModel and usermodel
+    const lotteryNumbers = await LotteryModel.aggregate([
+      {
+        $lookup: {
+          from: "user_datas", // Collection name in the database for the User model
+          localField: "user_id",
+          foreignField: "_id",
+          as: "userDetails",
+        },
+      },
+      {
+        $unwind: "$userDetails", // Flatten the userDetails array
+      },
+      {
+        $project: {
+          lottery_number: 1,
+          createdAt: 1,
+          "userDetails.user_Name": 1, // Include only the user's name
+        },
+      },
+      {
+        $sort: { createdAt: 1 }, // Sort by creation date in ascending order
+      },
+    ]);
 
     if (lotteryNumbers.length === 0) {
       return res.json({
@@ -287,29 +309,30 @@ const getAllLotteryNumbers = async (req, res) => {
       });
     }
 
-    // Format the response to include lottery numbers and their creation dates
-    const numbers = lotteryNumbers.map((entry) => ({
+    // Format the response
+    const result = lotteryNumbers.map((entry) => ({
       lotteryNumber: entry.lottery_number,
+      userName: entry.userDetails.user_Name,
       createdAt: entry.createdAt,
     }));
 
     res.json({
       success: true,
       message: "Lottery numbers fetched successfully.",
-      data: numbers,
+      data: result,
     });
   } catch (error) {
-    console.error("Error fetching lottery numbers:", error);
+    console.error("Error fetching lottery numbers with usernames:", error);
     res.status(500).json({
       success: false,
-      message: "Failed to fetch lottery numbers.",
+      message: "Failed to fetch lottery numbers with usernames.",
     });
   }
 };
 
 export {
   checkUserTerm,
-  getAllLotteryNumbers,
+  getAllLotteryNumbersWithUsernames,
   getUserLotteryNumbers,
   loginUser,
   payment,
