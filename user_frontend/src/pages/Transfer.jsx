@@ -14,6 +14,7 @@ const Transfer = () => {
     const { token } = useContext(Context);
     const navigate = useNavigate();
 
+    // Check if the user has agreed to the terms and conditions
     useEffect(() => {
         const checkUserTerms = async () => {
             try {
@@ -22,9 +23,6 @@ const Transfer = () => {
                 });
                 if (response.data.success) {
                     setUserTermStatus(response.data.userTermStatus);
-                    if (!response.data.userTermStatus) {
-                        setShowPopup(true);
-                    }
                 }
             } catch (error) {
                 console.error("Error fetching user terms status:", error);
@@ -34,6 +32,7 @@ const Transfer = () => {
         checkUserTerms();
     }, [token]);
 
+    // Handle accepting terms and conditions
     const handleAcceptTerms = async () => {
         try {
             const response = await axios.post(
@@ -50,11 +49,12 @@ const Transfer = () => {
         }
     };
 
+    // Handle payment process
     const handlePay = async () => {
         try {
             const response = await axios.post(
                 backendUrl + "/api/user/payment",
-                {},
+                { accountNo, amount, remark },
                 { headers: { token } }
             );
             if (response.data.success) {
@@ -68,14 +68,16 @@ const Transfer = () => {
             alert("An error occurred during payment.");
         }
     };
-
+    // Handle the Continue button click
     const handleContinue = () => {
-        if (accountNo.length !== 13) {
-            setError('Wrong Account Number. It should be 13 digits.');
+        if (accountNo.length <= 8) {
+            setError('Account Number must be more than 8 digits.');
+        } else if (isNaN(amount) || parseFloat(amount) <= 0) {
+            setError('Please enter a valid amount.');
         } else if (parseFloat(amount) > 25000) {
-            setError('Maximum amount to transfer is 25,000.');
+            setError('Maximum transfer amount is 25,000.');
         } else if (!remark.trim()) {
-            setError('Add remark.');
+            setError('Please add a remark.');
         } else {
             setError('');
             if (userTermStatus) {
@@ -85,6 +87,7 @@ const Transfer = () => {
             }
         }
     };
+
 
     return (
         <div className="flex flex-col items-center mt-10">
@@ -118,22 +121,25 @@ const Transfer = () => {
                 CONTINUE
             </button>
 
+            {/* Terms and Conditions Popup */}
             {showPopup && (
                 <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
                     <div className="bg-white rounded-lg shadow-lg max-w-md w-full p-6 overflow-y-auto max-h-[80vh]">
                         <h2 className="text-2xl font-bold text-gray-800 mb-4">Terms and Conditions</h2>
-                        <p className="text-gray-700 mb-4">Please accept the terms and conditions to proceed.</p>
+                        <p className="text-gray-700 mb-4">
+                            Please review and accept the terms and conditions to proceed with the transaction.
+                        </p>
                         <button
                             onClick={handleAcceptTerms}
                             className="block mx-auto mt-6 bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition duration-300"
                         >
-                            Accept
+                            Accept Terms and Conditions
                         </button>
                     </div>
                 </div>
             )}
         </div>
     );
-}
+};
 
 export default Transfer;

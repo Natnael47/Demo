@@ -5,14 +5,19 @@ import { useNavigate } from "react-router-dom"; // For navigation
 const Landing = () => {
     const navigate = useNavigate();
 
+    const handleLogout = () => {
+        localStorage.removeItem("token");
+        window.location.reload(); // Refresh to remove token and re-render the page
+    };
+
     return (
         <div className="min-h-screen bg-gray-100 flex flex-col items-center">
             {/* Header */}
             <div className="w-full flex justify-between items-center p-4 bg-white shadow-md">
                 <div className="text-lg font-bold">19:52</div>
                 <div className="text-purple-600 flex items-center space-x-4">
-                    <span>አማ</span>
-                    <button>
+                    <span>Logout</span>
+                    <button onClick={handleLogout}>
                         <ChevronRight size={20} />
                     </button>
                 </div>
@@ -52,9 +57,10 @@ const Landing = () => {
                         <Landmark size={30} className="text-purple-600" />
                         <span className="text-purple-600 mt-2">Banking</span>
                     </button>
-                    <button className="flex flex-col items-center bg-white shadow-md p-4 rounded-lg">
+                    <button className="flex flex-col items-center bg-white shadow-md p-4 rounded-lg"
+                        onClick={() => navigate("/lotteryNum")}>
                         <Lightbulb size={30} className="text-purple-600" />
-                        <span className="text-purple-600 mt-2">Utilities</span>
+                        <span className="text-purple-600 mt-2">My lottery Numbers</span>
                     </button>
                     <button className="flex flex-col items-center bg-white shadow-md p-4 rounded-lg">
                         <DollarSign size={30} className="text-purple-600" />

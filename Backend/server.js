@@ -19,4 +19,6 @@ app.get("/", (req, res) => {
 });
 app.use("/api/user", userRouter);
 
-app.listen(port, () => console.log("Server Started", port));
+app.listen(port, () => {
+  console.log(`Server Started on http://localhost:${port}`);
+});
