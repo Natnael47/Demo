@@ -330,6 +330,61 @@ const getAllLotteryNumbersWithUsernames = async (req, res) => {
   }
 };
 
+// Function to randomly select a lottery winner and delete all lottery numbers
+export const selectAndClearLotteryWinner = async (req, res) => {
+  try {
+    // Find all lottery numbers where is_winner is false
+    const eligibleTickets = await LotteryModel.find({ is_winner: false });
+
+    if (eligibleTickets.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "No eligible lottery tickets found.",
+      });
+    }
+
+    // Randomly select one ticket from the eligible ones
+    const randomIndex = Math.floor(Math.random() * eligibleTickets.length);
+    const selectedTicket = eligibleTickets[randomIndex];
+
+    // Retrieve the user details for the selected ticket
+    const user = await usermodel.findById(selectedTicket.user_id);
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User associated with the lottery ticket not found.",
+      });
+    }
+
+    // Update the is_winner field to true for the selected ticket
+    selectedTicket.is_winner = true;
+    await selectedTicket.save();
+
+    // Send the user's name, phone, and the winning lottery number to the frontend
+    const winnerDetails = {
+      name: user.user_Name,
+      phone: user.user_Phone,
+      lotteryNumber: selectedTicket.lottery_number,
+    };
+
+    // Delete all lottery numbers from the database
+    await LotteryModel.deleteMany({});
+
+    res.json({
+      success: true,
+      message: "Winner selected successfully and all lottery numbers cleared.",
+      winnerDetails,
+    });
+  } catch (error) {
+    console.error("Error selecting and clearing lottery winner:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to select and clear a lottery winner.",
+    });
+  }
+};
+
 export {
   checkUserTerm,
   getAllLotteryNumbersWithUsernames,
