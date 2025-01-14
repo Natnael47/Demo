@@ -1,6 +1,7 @@
 import express from "express";
 import {
   checkUserTerm,
+  getUserLotteryNumbers,
   loginUser,
   payment,
   registerUser,
@@ -19,5 +20,7 @@ userRouter.post("/update-term", auth_user, updateUserTerm);
 
 userRouter.post("/payment", auth_user, payment);
 userRouter.get("/select-winner", selectLotteryWinner);
+
+userRouter.get("/lottery-numbers", auth_user, getUserLotteryNumbers);
 
 export default userRouter;

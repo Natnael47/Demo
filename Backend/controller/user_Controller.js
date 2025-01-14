@@ -235,4 +235,50 @@ export const selectLotteryWinner = async (req, res) => {
   }
 };
 
-export { checkUserTerm, loginUser, payment, registerUser, updateUserTerm };
+// Collect Lottery Numbers by User ID
+const getUserLotteryNumbers = async (req, res) => {
+  const { userId } = req.body; // Get user ID from request body
+  try {
+    // Validate if userId is provided
+    if (!userId) {
+      return res.json({ success: false, message: "User ID is required" });
+    }
+
+    // Find lottery numbers associated with the user ID
+    const lotteryNumbers = await LotteryModel.find({ user_id: userId });
+
+    if (lotteryNumbers.length === 0) {
+      return res.json({
+        success: false,
+        message: "No lottery numbers found for the given user ID",
+      });
+    }
+
+    // Extract and return lottery numbers along with their creation dates
+    const numbers = lotteryNumbers.map((entry) => ({
+      lotteryNumber: entry.lottery_number,
+      createdAt: entry.createdAt,
+    }));
+
+    res.json({
+      success: true,
+      message: "Lottery numbers fetched successfully",
+      lotteryNumbers: numbers,
+    });
+  } catch (error) {
+    console.error("Error fetching lottery numbers:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch lottery numbers",
+    });
+  }
+};
+
+export {
+  checkUserTerm,
+  getUserLotteryNumbers,
+  loginUser,
+  payment,
+  registerUser,
+  updateUserTerm,
+};

@@ -4,6 +4,7 @@ import { ToastContainer } from 'react-toastify'
 import { Context } from './context/context'
 import Home from './pages/Home'
 import Landing from './pages/landing'
+import MyNumber from './pages/MyNumber'
 import Transfer from './pages/Transfer'
 import Login from './pages/User_Login'
 
@@ -20,6 +21,7 @@ const App = () => {
         <Route path='/home' element={<Home />} />
         <Route path='/' element={<Landing />} />
         <Route path='/transfer' element={<Transfer />} />
+        <Route path='/lotteryNum' element={<MyNumber />} />  {/* Default route */}
       </Routes>
     </div>
   ) : (
