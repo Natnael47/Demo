@@ -6,7 +6,7 @@ import {
   loginUser,
   payment,
   registerUser,
-  selectAndClearLotteryWinner,
+  selectAndKeepLotteryWinner,
   selectLotteryWinner,
   updateUserTerm,
 } from "../controller/user_Controller.js";
@@ -25,6 +25,6 @@ userRouter.get("/select-winner", selectLotteryWinner);
 
 userRouter.get("/lottery-numbers", auth_user, getUserLotteryNumbers);
 userRouter.get("/all-lottery-numbers", getAllLotteryNumbersWithUsernames);
-userRouter.get("/choose-winner", selectAndClearLotteryWinner);
+userRouter.get("/choose-winner", selectAndKeepLotteryWinner);
 
 export default userRouter;

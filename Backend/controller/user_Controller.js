@@ -313,6 +313,7 @@ const getAllLotteryNumbersWithUsernames = async (req, res) => {
     const result = lotteryNumbers.map((entry) => ({
       lotteryNumber: entry.lottery_number,
       userName: entry.userDetails.user_Name,
+      userPhone: entry.userDetails.user_Phone,
       createdAt: entry.createdAt,
     }));
 
@@ -330,8 +331,8 @@ const getAllLotteryNumbersWithUsernames = async (req, res) => {
   }
 };
 
-// Function to randomly select a lottery winner and delete all lottery numbers
-export const selectAndClearLotteryWinner = async (req, res) => {
+// Function to randomly select a lottery winner and delete all but the selected one
+export const selectAndKeepLotteryWinner = async (req, res) => {
   try {
     // Find all lottery numbers where is_winner is false
     const eligibleTickets = await LotteryModel.find({ is_winner: false });
@@ -357,7 +358,7 @@ export const selectAndClearLotteryWinner = async (req, res) => {
       });
     }
 
-    // Update the is_winner field to true for the selected ticket
+    // Set the is_winner field to false for the selected ticket (just in case it's not set yet)
     selectedTicket.is_winner = true;
     await selectedTicket.save();
 
@@ -368,19 +369,22 @@ export const selectAndClearLotteryWinner = async (req, res) => {
       lotteryNumber: selectedTicket.lottery_number,
     };
 
-    // Delete all lottery numbers from the database
-    await LotteryModel.deleteMany({});
+    // Delete all other lottery tickets except the selected one
+    await LotteryModel.deleteMany({
+      _id: { $ne: selectedTicket._id }, // Exclude the selected ticket
+    });
 
     res.json({
       success: true,
-      message: "Winner selected successfully and all lottery numbers cleared.",
+      message:
+        "Winner selected successfully and other lottery numbers cleared.",
       winnerDetails,
     });
   } catch (error) {
-    console.error("Error selecting and clearing lottery winner:", error);
+    console.error("Error selecting and keeping lottery winner:", error);
     res.status(500).json({
       success: false,
-      message: "Failed to select and clear a lottery winner.",
+      message: "Failed to select and keep a lottery winner.",
     });
   }
 };
