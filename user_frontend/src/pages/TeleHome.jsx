@@ -4,6 +4,11 @@ import { useNavigate } from "react-router-dom";
 
 const TeleHome = () => {
     const navigate = useNavigate();
+
+    const handleLogout = () => {
+        localStorage.removeItem("token");
+        window.location.reload(); // Refresh to remove token and re-render the page
+    };
     return (
         <div className="font-sans bg-green-200 min-h-screen flex flex-col">
             {/* Header */}
@@ -100,8 +105,8 @@ const TeleHome = () => {
                     <p className="text-xs">Apps</p>
                 </div>
                 <div className="flex flex-col items-center">
-                    <MessageCircle className="w-5 h-5" />
-                    <p className="text-xs">Engage</p>
+                    <MessageCircle className="w-5 h-5" onClick={handleLogout} />
+                    <p className="text-xs">Logout</p>
                 </div>
                 <div className="flex flex-col items-center">
                     <User className="w-5 h-5" />
