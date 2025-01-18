@@ -60,7 +60,7 @@ const TeleHome = () => {
                 <div className="grid grid-cols-4 gap-4 px-6 mt-4">
                     <div className="flex flex-col items-center">
                         <div className="bg-white p-3 rounded-full">
-                            <Home className="w-6 h-6 text-green-500" onClick={() => navigate("/telepay")} />
+                            <Home className="w-6 h-6 text-green-500" onClick={() => navigate("/tele-pay")} />
                         </div>
                         <p className="text-sm mt-2">Send Money</p>
                     </div>

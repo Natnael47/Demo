@@ -1,6 +1,8 @@
 import axios from "axios";
 import { ChevronDown } from "lucide-react";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
+import { backendUrl } from "../App";
+import { Context } from "../context/context";
 
 const TeleLogin = () => {
     const [currState, setCurrState] = useState("Login"); // Tracks current form state: Login or Sign Up
@@ -12,6 +14,8 @@ const TeleLogin = () => {
     });
 
     const [message, setMessage] = useState("");
+
+    const { setToken } = useContext(Context);
 
     // Handles input changes
     const onChangeHandler = (event) => {
@@ -26,14 +30,16 @@ const TeleLogin = () => {
 
         const apiUrl =
             currState === "Login"
-                ? "<your-backend-url>/api/user/login"
-                : "<your-backend-url>/api/user/register";
+                ? backendUrl + "/api/user/login"
+                : backendUrl + "/api/user/register";
 
         try {
             const response = await axios.post(apiUrl, data);
 
             if (response.data.success) {
                 setMessage(`${currState} successful!`);
+                setToken(response.data.token);
+                localStorage.setItem('token', response.data.token);
             } else {
                 setMessage(response.data.message);
             }
