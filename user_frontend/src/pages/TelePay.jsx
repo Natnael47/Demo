@@ -3,6 +3,7 @@ import { User } from 'lucide-react';
 import React, { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { backendUrl } from '../App';
+import { assets } from '../assets/assets';
 import { Context } from '../context/context';
 
 const TelePay = () => {
@@ -100,7 +101,7 @@ const TelePay = () => {
             <div className="p-4">
                 <div className="relative h-24 rounded-lg overflow-hidden">
                     <img
-                        src="https://via.placeholder.com/600x200"
+                        src={assets.telebanner}
                         alt="Banner"
                         className="object-cover w-full h-full"
                     />
@@ -139,7 +140,7 @@ const TelePay = () => {
                     />
                     {error && <p className="text-red-500 mt-2">{error}</p>}
                     <button
-                        className="mt-4 w-full bg-blue-500 text-white py-2 rounded-lg"
+                        className="mt-4 w-full bg-[#8EC641] text-white py-2 rounded-lg"
                         onClick={handleContinue}
                     >
                         Pay

@@ -2,6 +2,7 @@ import axios from "axios";
 import { ChevronDown } from "lucide-react";
 import React, { useContext, useState } from "react";
 import { backendUrl } from "../App";
+import { assets } from "../assets/assets";
 import { Context } from "../context/context";
 
 const TeleLogin = () => {
@@ -53,7 +54,7 @@ const TeleLogin = () => {
             {/* Header */}
             <div className="w-full flex justify-between items-center p-4">
                 <img
-                    src="/path-to-ethio-telecom-logo.png"
+                    src={assets.teleLogo}
                     alt="Ethio Telecom"
                     className="h-10"
                 />
@@ -142,12 +143,14 @@ const TeleLogin = () => {
                     />
                 </div>
 
-                <button
-                    type="submit"
-                    className="bg-blue-600 hover:bg-blue-700 text-white font-medium text-lg py-2 px-6 rounded-md"
-                >
-                    {currState === "Sign Up" ? "Sign Up" : "Login"}
-                </button>
+                <div className="flex justify-center mt-4">
+                    <button
+                        type="submit"
+                        className="bg-blue-600 hover:bg-blue-700 text-white font-medium text-lg py-2 px-6 rounded-md"
+                    >
+                        {currState === "Sign Up" ? "Sign Up" : "Login"}
+                    </button>
+                </div>
 
                 {message && (
                     <p className="mt-4 text-center text-red-500 text-sm">{message}</p>

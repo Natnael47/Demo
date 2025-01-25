@@ -1,6 +1,7 @@
 import { Bell, CreditCard, Eye, EyeOff, Grid, Home, MessageCircle, Search, User } from "lucide-react";
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { assets } from "../assets/assets";
 
 const TeleHome = () => {
     const navigate = useNavigate();
@@ -14,7 +15,7 @@ const TeleHome = () => {
             {/* Header */}
             <div className="flex items-center justify-between bg-green-500 px-4 py-2">
                 <img
-                    src="/path-to-ethio-telecom-logo.png"
+                    src={assets.teleLogo}
                     alt="Ethio Telecom"
                     className="h-10"
                 />
@@ -104,7 +105,7 @@ const TeleHome = () => {
                     <Grid className="w-5 h-5" />
                     <p className="text-xs">Apps</p>
                 </div>
-                <div className="flex flex-col items-center">
+                <div className="flex flex-col items-center cursor-pointer">
                     <MessageCircle className="w-5 h-5" onClick={handleLogout} />
                     <p className="text-xs">Logout</p>
                 </div>
