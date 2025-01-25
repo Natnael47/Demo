@@ -44,7 +44,7 @@ const Home = () => {
             <h1 className="text-2xl font-bold text-center mb-6">Lottery Numbers</h1>
             <div className="mb-6 flex justify-end">
                 <button
-                    className="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-6 rounded"
+                    className="bg-[#8EC641] hover:bg-green-700 text-white font-bold py-2 px-6 rounded"
                     onClick={chooseWinner}
                 >
                     Select Winner
