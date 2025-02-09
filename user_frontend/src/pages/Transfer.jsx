@@ -11,10 +11,11 @@ const Transfer = () => {
     const [error, setError] = useState('');
     const [userTermStatus, setUserTermStatus] = useState(null);
     const [showPopup, setShowPopup] = useState(false);
+    const [lotteryPopup, setLotteryPopup] = useState(false);
+    const [lotteryNumber, setLotteryNumber] = useState('');
     const { token } = useContext(Context);
     const navigate = useNavigate();
 
-    // Check if the user has agreed to the terms and conditions
     useEffect(() => {
         const checkUserTerms = async () => {
             try {
@@ -28,28 +29,9 @@ const Transfer = () => {
                 console.error("Error fetching user terms status:", error);
             }
         };
-
         checkUserTerms();
     }, [token]);
 
-    // Handle accepting terms and conditions
-    const handleAcceptTerms = async () => {
-        try {
-            const response = await axios.post(
-                backendUrl + "/api/user/update-term",
-                { user_Term: true },
-                { headers: { token } }
-            );
-            if (response.data.success) {
-                setUserTermStatus(true);
-                setShowPopup(false);
-            }
-        } catch (error) {
-            console.error("Error updating terms status:", error);
-        }
-    };
-
-    // Handle payment process
     const handlePay = async () => {
         try {
             const response = await axios.post(
@@ -58,8 +40,8 @@ const Transfer = () => {
                 { headers: { token } }
             );
             if (response.data.success) {
-                alert(`Payment Successful! Your Lottery Number: ${response.data.lottery_number}`);
-                navigate('/');
+                setLotteryNumber(response.data.lottery_number);
+                setLotteryPopup(true);
             } else {
                 alert("Payment Failed! Please try again.");
             }
@@ -68,7 +50,7 @@ const Transfer = () => {
             alert("An error occurred during payment.");
         }
     };
-    // Handle the Continue button click
+
     const handleContinue = () => {
         if (accountNo.length <= 8) {
             setError('Account Number must be more than 8 digits.');
@@ -80,14 +62,14 @@ const Transfer = () => {
             setError('Please add a remark.');
         } else {
             setError('');
-            if (userTermStatus) {
-                handlePay();
-            } else {
-                setShowPopup(true);
-            }
+            handlePay();
         }
     };
 
+    const handleCloseLotteryPopup = () => {
+        setLotteryPopup(false);
+        navigate('/');
+    };
 
     return (
         <div className="flex flex-col items-center mt-10">
@@ -121,23 +103,58 @@ const Transfer = () => {
                 CONTINUE
             </button>
 
-            {/* Terms and Conditions Popup */}
             {showPopup && (
                 <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-                    <div className="bg-white rounded-lg shadow-lg max-w-md w-full p-6 overflow-y-auto max-h-[80vh]">
+                    <div className="bg-white rounded-lg shadow-lg max-w-md w-full p-6 text-center">
                         <h2 className="text-2xl font-bold text-gray-800 mb-4">Terms and Conditions</h2>
                         <p className="text-gray-700 mb-4">
                             Please review and accept the terms and conditions to proceed with the transaction.
                         </p>
                         <button
-                            onClick={handleAcceptTerms}
-                            className="block mx-auto mt-6 bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition duration-300"
+                            onClick={() => setShowPopup(false)}
+                            className="mt-6 bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition duration-300"
                         >
                             Accept Terms and Conditions
                         </button>
                     </div>
                 </div>
             )}
+
+            {lotteryPopup && (
+                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+                    <div className="bg-white rounded-lg shadow-lg max-w-sm w-full p-4">
+                        <div className="bg-green-500 text-white text-lg font-bold p-3 rounded-t-lg flex items-center">
+                            <svg className="w-6 h-6 mr-2" fill="white" viewBox="0 0 20 20">
+                                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-10.707a1 1 0 00-1.414-1.414L9 9.172 7.707 7.879a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l5-5z" clipRule="evenodd"></path>
+                            </svg>
+                            <span>Thank you</span>
+                        </div>
+                        <div className="p-4 text-gray-800">
+                            <p className="text-lg font-bold mb-2">Message</p>
+                            <p className="text-sm">
+                                ETB {amount} debited from your account on {new Date().toLocaleDateString()}
+                                with transaction ID: <span className="font-bold">{accountNo}</span>.
+                            </p>
+                            <p className="mt-2 font-semibold">Your Lottery Number:</p>
+                            <div className="text-2xl font-bold text-purple-700 mt-2">{lotteryNumber}</div>
+
+                            <div className="flex justify-center mt-4">
+                                <img src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${Math.random()}`} alt="QR Code" className="w-24 h-24" />
+                            </div>
+                        </div>
+                        <div className="p-4 text-center border-t">
+                            <button
+                                onClick={handleCloseLotteryPopup}
+                                className="bg-purple-700 text-white px-6 py-2 rounded-lg hover:bg-purple-800 transition duration-300"
+                            >
+                                OK
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+
         </div>
     );
 };
