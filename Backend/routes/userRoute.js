@@ -4,6 +4,7 @@ import {
   getAllLotteryNumbersWithUsernames,
   getUserLotteryNumbers,
   loginUser,
+  notifyAndRewardWinner,
   payment,
   registerUser,
   selectAndKeepLotteryWinner,
@@ -26,5 +27,7 @@ userRouter.get("/select-winner", selectLotteryWinner);
 userRouter.get("/lottery-numbers", auth_user, getUserLotteryNumbers);
 userRouter.get("/all-lottery-numbers", getAllLotteryNumbersWithUsernames);
 userRouter.get("/choose-winner", selectAndKeepLotteryWinner);
+
+userRouter.post("/notify-winner", auth_user, notifyAndRewardWinner);
 
 export default userRouter;

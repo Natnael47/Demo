@@ -389,6 +389,75 @@ export const selectAndKeepLotteryWinner = async (req, res) => {
   }
 };
 
+// Function to notify and reward the lottery winner
+export const notifyAndRewardWinner = async (req, res) => {
+  try {
+    const { userId } = req.body; // Get user ID from request
+
+    if (!userId) {
+      return res.status(400).json({
+        success: false,
+        message: "User ID is required.",
+      });
+    }
+
+    // Retrieve user details
+    const user = await usermodel.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found.",
+      });
+    }
+
+    // Find if this user has a winning lottery ticket
+    const winningTicket = await LotteryModel.findOne({
+      user_id: userId,
+      is_winner: true,
+    });
+
+    if (!winningTicket) {
+      console.log(`User ${user.user_Name} checked, but did not win.`);
+      return; // Do nothing if the user is not a winner
+    }
+
+    // If the user has won, credit their balance
+    user.balance = (user.balance || 0) + 100000;
+    await user.save();
+
+    // Notify user about the win
+    const notificationMessage = `🎉 Congratulations ${user.user_Name}! 🎉 You have won the lottery! Your winning number: ${winningTicket.lottery_number}. A reward of 100,000 has been credited to your account.`;
+
+    // Simulate sending a notification (Replace with actual SMS/email service if needed)
+    console.log(
+      `Sending notification to ${user.user_Phone}: ${notificationMessage}`
+    );
+
+    // Delete the winning lottery entry after notifying the user
+    await LotteryModel.deleteOne({ _id: winningTicket._id });
+
+    res.json({
+      success: true,
+      message: "Congratulations! You are a winner!",
+      isWinner: true,
+      winnerDetails: {
+        userId: user._id,
+        name: user.user_Name,
+        phone: user.user_Phone,
+        lotteryNumber: winningTicket.lottery_number,
+        rewardAmount: 100000,
+      },
+    });
+  } catch (error) {
+    console.error("Error checking winner status:", error);
+    res.status(500).json({
+      success: false,
+      message: "An error occurred while checking the lottery results.",
+    });
+  }
+};
+
 export {
   checkUserTerm,
   getAllLotteryNumbersWithUsernames,

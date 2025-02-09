@@ -112,7 +112,7 @@ const Transfer = () => {
                         </p>
                         <button
                             onClick={() => setShowPopup(false)}
-                            className="mt-6 bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition duration-300"
+                            className="mt-6 bg-purple-700 text-white px-6 py-3 rounded-lg hover:bg-purple-800 transition duration-300"
                         >
                             Accept Terms and Conditions
                         </button>
@@ -132,12 +132,10 @@ const Transfer = () => {
                         <div className="p-4 text-gray-800">
                             <p className="text-lg font-bold mb-2">Message</p>
                             <p className="text-sm">
-                                ETB {amount} debited from your account on {new Date().toLocaleDateString()}
-                                with transaction ID: <span className="font-bold">{accountNo}</span>.
+                                ETB {amount} debited from your account on {new Date().toLocaleDateString()} with transaction ID: <span className="font-bold">{accountNo}</span>.
                             </p>
                             <p className="mt-2 font-semibold">Your Lottery Number:</p>
                             <div className="text-2xl font-bold text-purple-700 mt-2">{lotteryNumber}</div>
-
                             <div className="flex justify-center mt-4">
                                 <img src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${Math.random()}`} alt="QR Code" className="w-24 h-24" />
                             </div>
@@ -153,8 +151,6 @@ const Transfer = () => {
                     </div>
                 </div>
             )}
-
-
         </div>
     );
 };
