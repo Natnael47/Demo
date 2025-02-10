@@ -145,7 +145,7 @@ const Transfer = () => {
                                 onClick={handleCloseLotteryPopup}
                                 className="bg-purple-700 text-white px-6 py-2 rounded-lg hover:bg-purple-800 transition duration-300"
                             >
-                                OK
+                                Done
                             </button>
                         </div>
                     </div>

@@ -1,9 +1,42 @@
+import axios from "axios";
 import { ChevronRight, DollarSign, Droplet, Landmark, Lightbulb, Phone, Send } from "lucide-react";
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { backendUrl } from "../App";
+import { Context } from "../context/context";
 
 const Landing = () => {
+    const { token } = useContext(Context);
     const navigate = useNavigate();
+    const [userStatus, setUserStatus] = useState(null);
+    const [balance, setBalance] = useState(23000.46);
+    const [winnerData, setWinnerData] = useState(null);
+
+    useEffect(() => {
+        const checkUserWinStatus = async () => {
+            console.log("Executing checkUserWinStatus..."); // Debug log
+            try {
+                const response = await axios.post(`${backendUrl}/api/user/notify-winner`, {
+                    headers: { token },
+                });
+
+                console.log("Response received:", response.data); // Log API response
+
+                if (response.data.success && response.data.isWinner) {
+                    setWinnerData(response.data.winnerDetails);
+                    setBalance(prevBalance => prevBalance + response.data.winnerDetails.rewardAmount);
+                } else {
+                    console.log("User is not a winner."); // Debug log
+                }
+            } catch (error) {
+                console.error("Error fetching user win status:", error);
+            }
+        };
+
+        if (token) {
+            checkUserWinStatus();
+        }
+    }, [token]); // Runs every time `token` changes
 
     const handleLogout = () => {
         localStorage.removeItem("token");
@@ -12,6 +45,19 @@ const Landing = () => {
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-purple-600 to-indigo-600 flex flex-col items-center text-white">
+            {/* Winner Popup */}
+            {winnerData && (
+                <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center">
+                    <div className="bg-white p-6 rounded-lg shadow-lg text-gray-900 text-center">
+                        <h2 className="text-2xl font-bold text-green-600">Congratulations!</h2>
+                        <p className="mt-2 text-lg">You are a winner!</p>
+                        <p className="mt-4 text-sm text-gray-700">Lottery Number: {winnerData.lotteryNumber}</p>
+                        <p className="text-sm text-gray-700">Reward: {winnerData.rewardAmount} Birr</p>
+                        <button onClick={() => setWinnerData(null)} className="mt-4 px-4 py-2 bg-green-600 text-white rounded-md">OK</button>
+                    </div>
+                </div>
+            )}
+
             {/* Header */}
             <div className="w-full flex justify-between items-center p-4 bg-white text-gray-800 shadow-md">
                 <div className="text-lg font-bold">19:52</div>
@@ -31,7 +77,7 @@ const Landing = () => {
                     <p className="text-lg font-semibold text-gray-700 flex items-center">
                         Balance <ChevronRight className="ml-1" />
                     </p>
-                    <h2 className="text-4xl font-bold mt-2 text-purple-600">23,000.46 Birr</h2>
+                    <h2 className="text-4xl font-bold mt-2 text-purple-600">{balance.toLocaleString()} Birr</h2>
                 </div>
                 <p className="text-sm text-gray-500 mt-4">Saving - 10004561*****</p>
                 <p className="text-sm text-gray-500">14 Jan 2025 07:49:47 PM</p>

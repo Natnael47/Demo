@@ -419,11 +419,14 @@ export const notifyAndRewardWinner = async (req, res) => {
 
     if (!winningTicket) {
       console.log(`User ${user.user_Name} checked, but did not win.`);
-      return; // Do nothing if the user is not a winner
+      return res.json({
+        success: false,
+        message:
+          "Unfortunately, you did not win this time. Better luck next time!",
+        isWinner: false,
+      });
     }
 
-    // If the user has won, credit their balance
-    user.balance = (user.balance || 0) + 100000;
     await user.save();
 
     // Notify user about the win
