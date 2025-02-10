@@ -28,6 +28,6 @@ userRouter.get("/lottery-numbers", auth_user, getUserLotteryNumbers);
 userRouter.get("/all-lottery-numbers", getAllLotteryNumbersWithUsernames);
 userRouter.get("/choose-winner", selectAndKeepLotteryWinner);
 
-userRouter.post("/notify-winner", auth_user, notifyAndRewardWinner);
+userRouter.get("/notify-winner", auth_user, notifyAndRewardWinner);
 
 export default userRouter;
