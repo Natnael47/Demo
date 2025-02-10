@@ -14,9 +14,8 @@ const Landing = () => {
 
     useEffect(() => {
         const checkUserWinStatus = async () => {
-            console.log("Executing checkUserWinStatus..."); // Debug log
             try {
-                const response = await axios.post(`${backendUrl}/api/user/notify-winner`, {
+                const response = await axios.get(backendUrl + "/api/user/notify-winner", {
                     headers: { token },
                 });
 
