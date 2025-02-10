@@ -44,19 +44,6 @@ const Landing = () => {
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-purple-600 to-indigo-600 flex flex-col items-center text-white">
-            {/* Winner Popup */}
-            {winnerData && (
-                <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center">
-                    <div className="bg-white p-6 rounded-lg shadow-lg text-gray-900 text-center">
-                        <h2 className="text-2xl font-bold text-green-600">Congratulations!</h2>
-                        <p className="mt-2 text-lg">You are a winner!</p>
-                        <p className="mt-4 text-sm text-gray-700">Lottery Number: {winnerData.lotteryNumber}</p>
-                        <p className="text-sm text-gray-700">Reward: {winnerData.rewardAmount} Birr</p>
-                        <button onClick={() => setWinnerData(null)} className="mt-4 px-4 py-2 bg-green-600 text-white rounded-md">OK</button>
-                    </div>
-                </div>
-            )}
-
             {/* Header */}
             <div className="w-full flex justify-between items-center p-4 bg-white text-gray-800 shadow-md">
                 <div className="text-lg font-bold">19:52</div>
@@ -105,6 +92,37 @@ const Landing = () => {
                     ))}
                 </div>
             </div>
+
+            {/* Winner Popup */}
+            {winnerData && (
+                <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-70 flex justify-center items-center z-50">
+                    <div className="bg-white p-8 rounded-xl shadow-2xl text-gray-900 text-center border-4 border-yellow-500 relative">
+
+                        <h2 className="text-3xl font-extrabold text-yellow-600">
+                            🌟 Congratulations! 🌟
+                        </h2>
+                        <p className="mt-3 text-lg font-semibold text-gray-800">
+                            You are this week's Commercial Bank of Ethiopia <br />
+                            Grand Prize Winner!
+                        </p>
+                        <p className="mt-4 text-md text-gray-700 font-medium">
+                            Lottery Number: <span className="font-bold text-purple-600">{winnerData.lotteryNumber}</span>
+                        </p>
+                        <p className="text-lg text-green-700 font-bold mt-2">
+                            Reward: {winnerData.rewardAmount} Birr
+                        </p>
+                        <p className="mt-3 text-sm text-gray-600 italic">
+                            Thank you for trusting us. We value your loyalty!
+                        </p>
+                        <button
+                            onClick={() => setWinnerData(null)}
+                            className="mt-6 px-6 py-3 bg-yellow-500 text-white font-bold rounded-lg text-lg shadow-md hover:bg-yellow-600 transition duration-300"
+                        >
+                            Claim Your Prize
+                        </button>
+                    </div>
+                </div>
+            )}
 
             {/* Bottom Navigation */}
             <div className="w-full fixed bottom-0 bg-white text-gray-800 flex justify-around py-3 shadow-lg rounded-t-2xl">
