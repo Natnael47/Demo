@@ -14,6 +14,29 @@ import {
 import auth_user from "../middleWare/auth_user.js";
 
 const userRouter = express.Router();
+/**
+ * @swagger
+ * /api/user/potato/{id}:
+ *   get:
+ *     summary: Get a resource
+ *     description: Get a specific resource by ID.
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID of the resource to retrieve.
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Successful response
+ */
+
+userRouter.get("/potato/:id", (req, res) => {
+  res.send(`Getting resource with ID: ${req.params.id}`);
+});
+
+userRouter.post("/term", auth_user, checkUserTerm);
 
 userRouter.post("/register", registerUser);
 userRouter.post("/login", loginUser);
