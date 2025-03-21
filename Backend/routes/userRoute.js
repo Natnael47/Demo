@@ -18,10 +18,47 @@ const userRouter = express.Router();
  * /api/user/register:
  *   post:
  *     summary: Register a new user
- *     description: Creates a new user account with provided details.
+ *     description: Creates a new user account with the provided details. This endpoint validates user input, checks for duplicate email or phone number, hashes the password, and generates an authentication token upon successful registration.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - user_Name
+ *               - user_Email
+ *               - user_Phone
+ *               - user_Password
+ *             properties:
+ *               user_Name:
+ *                 type: string
+ *                 description: Full name of the user.
+ *               user_Phone:
+ *                 type: string
+ *                 description: Unique phone number of the user.
+ *               user_Password:
+ *                 type: string
+ *                 format: password
+ *                 description: Password must be at least 8 characters long.
  *     responses:
  *       200:
  *         description: User registered successfully.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 token:
+ *                   type: string
+ *       400:
+ *         description: Bad request, missing or invalid fields.
+ *       409:
+ *         description: Email or phone number already in use.
+ *       500:
+ *         description: Internal server error.
  */
 userRouter.post("/register", registerUser);
 
@@ -29,11 +66,43 @@ userRouter.post("/register", registerUser);
  * @swagger
  * /api/user/login:
  *   post:
- *     summary: Login user
- *     description: Logs in the user using phone number and password.
+ *     summary: Authenticate user
+ *     description: Logs in the user using their phone number and password. If authentication is successful, a JWT token is returned.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - user_Phone
+ *               - user_Password
+ *             properties:
+ *               user_Phone:
+ *                 type: string
+ *                 description: Registered phone number of the user.
+ *               user_Password:
+ *                 type: string
+ *                 format: password
+ *                 description: Password associated with the account.
  *     responses:
  *       200:
  *         description: User logged in successfully.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 token:
+ *                   type: string
+ *       401:
+ *         description: Unauthorized, incorrect credentials.
+ *       404:
+ *         description: User not found.
+ *       500:
+ *         description: Internal server error.
  */
 userRouter.post("/login", loginUser);
 
