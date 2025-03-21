@@ -226,13 +226,40 @@ userRouter.get("/select-winner", selectLotteryWinner);
  * @swagger
  * /api/user/lottery-numbers:
  *   get:
- *     summary: Get user's lottery numbers
- *     description: Fetches all lottery numbers associated with a user.
+ *     summary: Retrieve user's lottery numbers
+ *     description: Fetches all lottery numbers associated with the authenticated user.
  *     security:
  *       - BearerAuth: []
  *     responses:
  *       200:
- *         description: User's lottery numbers retrieved successfully.
+ *         description: Successfully retrieved user's lottery numbers.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: "Lottery numbers fetched successfully."
+ *                 lotteryNumbers:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       lotteryNumber:
+ *                         type: string
+ *                         example: "123456789012"
+ *                       createdAt:
+ *                         type: string
+ *                         format: date-time
+ *                         example: "2024-03-21T12:00:00Z"
+ *       400:
+ *         description: User ID is missing or invalid.
+ *       500:
+ *         description: Internal server error.
  */
 userRouter.get("/lottery-numbers", auth_user, getUserLotteryNumbers);
 
@@ -240,11 +267,45 @@ userRouter.get("/lottery-numbers", auth_user, getUserLotteryNumbers);
  * @swagger
  * /api/user/all-lottery-numbers:
  *   get:
- *     summary: Get all lottery numbers
- *     description: Retrieves all lottery numbers along with associated usernames.
+ *     summary: Retrieve all lottery numbers (Admin Only)
+ *     description: Fetches all lottery numbers along with the associated usernames.
+ *       This endpoint is accessible only by a super admin. The admin **cannot** modify or change any data.
+ *     security:
+ *       - BearerAuth: []
  *     responses:
  *       200:
- *         description: All lottery numbers retrieved successfully.
+ *         description: Successfully retrieved all lottery numbers.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: "Lottery numbers fetched successfully."
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       lotteryNumber:
+ *                         type: string
+ *                         example: "987654321012"
+ *                       userName:
+ *                         type: string
+ *                         example: "John Doe"
+ *                       userPhone:
+ *                         type: string
+ *                         example: "+251912345678"
+ *                       createdAt:
+ *                         type: string
+ *                         format: date-time
+ *                         example: "2024-03-21T12:00:00Z"
+ *       500:
+ *         description: Internal server error.
  */
 userRouter.get("/all-lottery-numbers", getAllLotteryNumbersWithUsernames);
 
@@ -252,13 +313,48 @@ userRouter.get("/all-lottery-numbers", getAllLotteryNumbersWithUsernames);
  * @swagger
  * /api/user/notify-winner:
  *   get:
- *     summary: Notify and reward the winner
- *     description: Notifies the winner and processes their reward.
+ *     summary: Notify and reward the lottery winner
+ *     description: Notifies the winner and processes their reward if they hold the winning lottery number.
  *     security:
  *       - BearerAuth: []
  *     responses:
  *       200:
  *         description: Winner notified successfully.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: "Congratulations! You are the winner."
+ *                 winnerDetails:
+ *                   type: object
+ *                   properties:
+ *                     userId:
+ *                       type: string
+ *                       example: "605c72b9f1d2c70015f87b4f"
+ *                     name:
+ *                       type: string
+ *                       example: "Jane Doe"
+ *                     phone:
+ *                       type: string
+ *                       example: "+251912345678"
+ *                     lotteryNumber:
+ *                       type: string
+ *                       example: "123456789012"
+ *                     rewardAmount:
+ *                       type: integer
+ *                       example: 100000
+ *       400:
+ *         description: User ID is required but missing.
+ *       404:
+ *         description: User does not exist or did not win the lottery.
+ *       500:
+ *         description: Internal server error.
  */
 userRouter.get("/notify-winner", auth_user, notifyAndRewardWinner);
 
