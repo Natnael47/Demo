@@ -125,15 +125,90 @@ userRouter.put("/update-term", auth_user, updateUserTerm);
  * @swagger
  * /api/user/payment:
  *   post:
- *     summary: Process payment
- *     description: Handles user payments and generates a lottery number.
+ *     summary: Process lottery payment and generate a ticket
+ *     description: >
+ *       - Confirms the payment transaction.
+ *       - Deducts 1 additional birr for the lottery ticket.
+ *       - Generates a lottery number for the user who agreed to participate.
  *     security:
  *       - BearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - userId
+ *             properties:
+ *               userId:
+ *                 type: string
+ *                 description: The unique ID of the user making the payment.
  *     responses:
  *       200:
- *         description: Payment processed successfully.
+ *         description: Payment processed and lottery number generated successfully.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: "Payment successful. Lottery number generated."
+ *                 lottery_number:
+ *                   type: string
+ *                   example: "123456789012"
+ *       400:
+ *         description: Invalid request or payment failure.
+ *       500:
+ *         description: Internal server error.
  */
 userRouter.post("/payment", auth_user, payment);
+
+/**
+ * @swagger
+ * /api/user/choose-winner:
+ *   post:
+ *     summary: Select a lottery winner and remove other tickets
+ *     description: >
+ *       - Randomly selects a single winner from the lottery entries.
+ *       - Deletes all other lottery numbers from the database.
+ *       - Returns the winner's details including name, phone, and lottery number.
+ *     responses:
+ *       200:
+ *         description: Winner selected successfully, and other tickets cleared.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: "Winner selected successfully and other lottery numbers cleared."
+ *                 winnerDetails:
+ *                   type: object
+ *                   properties:
+ *                     name:
+ *                       type: string
+ *                       example: "John Doe"
+ *                     phone:
+ *                       type: string
+ *                       example: "+251912345678"
+ *                     lotteryNumber:
+ *                       type: string
+ *                       example: "987654321012"
+ *       404:
+ *         description: No eligible lottery tickets found.
+ *       500:
+ *         description: Internal server error.
+ */
+userRouter.post("/choose-winner", selectAndKeepLotteryWinner);
 
 /**
  * @swagger
@@ -172,18 +247,6 @@ userRouter.get("/lottery-numbers", auth_user, getUserLotteryNumbers);
  *         description: All lottery numbers retrieved successfully.
  */
 userRouter.get("/all-lottery-numbers", getAllLotteryNumbersWithUsernames);
-
-/**
- * @swagger
- * /api/user/choose-winner:
- *   get:
- *     summary: Choose and keep a lottery winner
- *     description: Randomly selects a winner and deletes all other tickets.
- *     responses:
- *       200:
- *         description: Winner chosen and other tickets deleted.
- */
-userRouter.get("/choose-winner", selectAndKeepLotteryWinner);
 
 /**
  * @swagger

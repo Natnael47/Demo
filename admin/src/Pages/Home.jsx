@@ -9,7 +9,7 @@ const Home = () => {
     // Handle selecting winner and refreshing page
     const chooseWinner = async () => {
         try {
-            const response = await axios.get(
+            const response = await axios.post(
                 backendUrl + "/api/user/choose-winner",
                 { headers: {} }
             );
