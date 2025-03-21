@@ -125,20 +125,77 @@ const Transfer = () => {
 
             {showPopup && (
                 <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-                    <div className="bg-white rounded-lg shadow-lg max-w-md w-full p-6 text-center">
-                        <h2 className="text-2xl font-bold text-gray-800 mb-4">Terms and Conditions</h2>
-                        <p className="text-gray-700 mb-4">
-                            Please review and accept the terms and conditions to proceed with the transaction.
-                        </p>
-                        <button
-                            onClick={handleAcceptTerms}
-                            className="mt-6 bg-purple-700 text-white px-6 py-3 rounded-lg hover:bg-purple-800 transition duration-300"
-                        >
-                            Accept Terms and Conditions
-                        </button>
+                    <div className="bg-white rounded-2xl shadow-2xl max-w-lg w-full p-5 sm:p-6">
+                        {/* Header */}
+                        <h2 className="text-xl sm:text-2xl font-bold text-gray-900 text-center mb-5">
+                            Terms and Conditions
+                        </h2>
+
+                        {/* Content */}
+                        <div className="text-gray-700 space-y-5 overflow-y-auto max-h-[55vh] sm:max-h-[65vh]">
+                            {/* Section 1 */}
+                            <div>
+                                <h3 className="font-semibold text-base sm:text-lg mb-1.5">1. Service Fee & Lottery Participation</h3>
+                                <ul className="list-disc list-inside text-sm sm:text-sm space-y-1.5">
+                                    <li>A <strong>1 Birr</strong> service fee will be charged for each transfer.</li>
+                                    <li>Each transaction earns a <strong>lottery number</strong> for a chance to win cash prizes.</li>
+                                    <li>Prizes include up to <strong>100,000 Birr daily</strong> and <strong>1,000,000 Birr monthly</strong>.</li>
+                                </ul>
+                            </div>
+
+                            {/* Section 2 */}
+                            <div>
+                                <h3 className="font-semibold text-base sm:text-lg mb-1.5">2. Unsubscribing</h3>
+                                <p className="text-sm sm:text-sm">
+                                    - You may opt out of the lottery anytime through app settings or by contacting support.
+                                    Opting out stops future participation but does not affect past entries.
+                                </p>
+                            </div>
+
+                            {/* Section 3 */}
+                            <div>
+                                <h3 className="font-semibold text-base sm:text-lg mb-1.5">3. Claiming Prizes</h3>
+                                <ul className="list-disc list-inside text-sm sm:text-sm space-y-1.5">
+                                    <li>Winners will be notified via the app and registered contact details.</li>
+                                    <li>Prizes must be claimed within <strong>30 days</strong> of notification.</li>
+                                    <li>Identification and proof of transaction may be required.</li>
+                                </ul>
+                            </div>
+
+                            {/* Section 4 */}
+                            <div>
+                                <h3 className="font-semibold text-base sm:text-lg mb-1.5">4. Customer Support</h3>
+                                <p className="text-sm sm:text-sm">
+                                    For inquiries, unsubscribing, or complaints, contact us at
+                                    <a href="tel:+2519112****" className="text-purple-600 font-medium hover:underline ml-1">
+                                        +2519112****
+                                    </a>.
+                                </p>
+                            </div>
+
+                            {/* Section 5 */}
+                            <div>
+                                <h3 className="font-semibold text-base sm:text-lg mb-1.5">5. Agreement</h3>
+                                <p className="text-sm sm:text-sm">
+                                    By clicking "Accept", you agree to these terms for every transaction. The bank reserves the
+                                    right to update terms with prior notice.
+                                </p>
+                            </div>
+                        </div>
+
+                        {/* Footer */}
+                        <div className="mt-5 flex justify-center">
+                            <button
+                                onClick={handleAcceptTerms}
+                                className="bg-purple-600 text-white px-6 py-2 rounded-full shadow-lg hover:bg-purple-700 focus:ring-4 focus:ring-purple-400 transition duration-300"
+                            >
+                                Accept Terms and Conditions
+                            </button>
+                        </div>
                     </div>
                 </div>
             )}
+
 
             {lotteryPopup && (
                 <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">

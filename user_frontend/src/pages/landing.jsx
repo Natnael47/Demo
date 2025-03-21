@@ -43,7 +43,7 @@ const Landing = () => {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-purple-600 to-indigo-600 flex flex-col items-center text-white">
+        <div className="min-h-screen bg-white flex flex-col items-center">
             {/* Header */}
             <div className="w-full flex justify-between items-center p-4 bg-white text-gray-800 shadow-md">
                 <div className="text-lg font-bold">19:52</div>
@@ -56,22 +56,22 @@ const Landing = () => {
             </div>
 
             {/* Balance Card */}
-            <div className="w-11/12 bg-white text-gray-900 p-6 mt-6 rounded-2xl shadow-lg">
-                <h1 className="text-xl font-bold">Commercial Bank of Ethiopia</h1>
-                <p className="text-sm text-gray-500">The Bank You Can Always Rely On!</p>
+            <div className="w-11/12 bg-[#273238] text-gray-900 p-6 mt-6 rounded-2xl shadow-lg">
+                <h1 className="text-xl text-[#FBD78A] font-bold">Commercial Bank of Ethiopia</h1>
+                <p className="text-sm text-[#FBD78A]">The Bank You Can Always Rely On!</p>
                 <div className="mt-4">
-                    <p className="text-lg font-semibold text-gray-700 flex items-center">
+                    <p className="text-lg font-semibold text-white flex items-center">
                         Balance <ChevronRight className="ml-1" />
                     </p>
-                    <h2 className="text-4xl font-bold mt-2 text-purple-600">{balance.toLocaleString()} Birr</h2>
+                    <h2 className="text-4xl font-bold mt-2 text-white">{balance.toLocaleString()} Birr</h2>
                 </div>
-                <p className="text-sm text-gray-500 mt-4">Saving - 10004561*****</p>
-                <p className="text-sm text-gray-500">14 Jan 2025 07:49:47 PM</p>
+                <p className="text-sm text-[#FBD78A] mt-4">Saving - 10004561*****</p>
+                <p className="text-sm text-white">14 Jan 2025 07:49:47 PM</p>
             </div>
 
             {/* Services Section */}
             <div className="mt-8 w-full flex flex-col items-center">
-                <h2 className="text-lg font-bold text-white mb-4">Services</h2>
+                <h2 className="text-lg font-bold text-[#8F23AA] mb-4">Services</h2>
                 <div className="grid grid-cols-3 gap-4 w-11/12">
                     {[
                         { icon: <Phone size={30} />, label: "Top Up" },
@@ -83,7 +83,7 @@ const Landing = () => {
                     ].map((service, index) => (
                         <button
                             key={index}
-                            className="flex flex-col items-center bg-white shadow-md p-4 rounded-xl transition-transform transform hover:scale-105"
+                            className="flex flex-col items-center bg-white shadow-2xl border p-4 rounded-xl transition-transform transform hover:scale-105"
                             onClick={service.action}
                         >
                             <div className="text-purple-600">{service.icon}</div>
@@ -125,9 +125,9 @@ const Landing = () => {
             )}
 
             {/* Bottom Navigation */}
-            <div className="w-full fixed bottom-0 bg-white text-gray-800 flex justify-around py-3 shadow-lg rounded-t-2xl">
+            <div className="w-full fixed bottom-0 bg-[#8F23AA] text-gray-800 flex justify-around py-3 shadow-lg">
                 {["Home", "Accounts", "Recents"].map((label, index) => (
-                    <button key={index} className="flex flex-col items-center text-gray-600 hover:text-purple-600">
+                    <button key={index} className="flex flex-col items-center text-white hover:text-gray-100">
                         <div className="w-6 h-6 bg-gray-300 rounded-full"></div>
                         <span className="text-sm mt-1 font-medium">{label}</span>
                     </button>

@@ -26,9 +26,9 @@ const MyNumber = () => {
     }, [token]);
 
     return (
-        <div className="h-screen bg-gradient-to-b from-purple-500 to-purple-200 flex flex-col text-white">
+        <div className="h-screen bg-white flex flex-col text-white">
             {/* Header */}
-            <div className="flex items-center justify-between px-4 py-4 shadow-lg bg-purple-800">
+            <div className="flex items-center justify-between px-4 py-4 shadow-2xl border-spacing-1 bg-purple-800">
                 <button onClick={() => navigate(-1)} className="text-white">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" className="w-6 h-6">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
