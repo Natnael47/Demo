@@ -24,6 +24,9 @@ const Transfer = () => {
                 });
                 if (response.data.success) {
                     setUserTermStatus(response.data.userTermStatus);
+                    if (!response.data.userTermStatus) {
+                        setShowPopup(true);
+                    }
                 }
             } catch (error) {
                 console.error("Error fetching user terms status:", error);
@@ -48,6 +51,23 @@ const Transfer = () => {
         } catch (error) {
             console.error("Payment error:", error);
             alert("An error occurred during payment.");
+        }
+    };
+
+    const handleAcceptTerms = async () => {
+        try {
+            const response = await axios.post(
+                `${backendUrl}/api/user/update-term`,
+                { user_Term: true },
+                { headers: { token } }
+            );
+
+            if (response.data.success) {
+                setUserTermStatus(true);
+                setShowPopup(false);
+            }
+        } catch (error) {
+            console.error("Error updating terms status:", error);
         }
     };
 
@@ -111,7 +131,7 @@ const Transfer = () => {
                             Please review and accept the terms and conditions to proceed with the transaction.
                         </p>
                         <button
-                            onClick={() => setShowPopup(false)}
+                            onClick={handleAcceptTerms}
                             className="mt-6 bg-purple-700 text-white px-6 py-3 rounded-lg hover:bg-purple-800 transition duration-300"
                         >
                             Accept Terms and Conditions
