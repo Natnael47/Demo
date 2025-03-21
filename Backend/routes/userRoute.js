@@ -14,19 +14,6 @@ import {
 import auth_user from "../middleWare/auth_user.js";
 
 const userRouter = express.Router();
-/**
- * @swagger
- * /api/user/term:
- *   post:
- *     summary: Check user term status
- *     description: Verifies if the user has accepted the terms.
- *     security:
- *       - BearerAuth: []
- *     responses:
- *       200:
- *         description: User term status retrieved successfully.
- */
-userRouter.post("/term", auth_user, checkUserTerm);
 
 /**
  * @swagger
@@ -86,7 +73,7 @@ userRouter.post("/login", loginUser);
  *       500:
  *         description: Internal server error.
  */
-userRouter.get("/check", auth_user, checkUserTerm);
+userRouter.get("/check-User-Term", auth_user, checkUserTerm);
 
 /**
  * @swagger

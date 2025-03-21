@@ -19,7 +19,7 @@ const Transfer = () => {
     useEffect(() => {
         const checkUserTerms = async () => {
             try {
-                const response = await axios.get(backendUrl + "/api/user/check", {
+                const response = await axios.get(backendUrl + "/api/user/check-User-Term", {
                     headers: { token },
                 });
                 if (response.data.success) {
