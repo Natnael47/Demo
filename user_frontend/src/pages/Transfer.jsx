@@ -56,7 +56,7 @@ const Transfer = () => {
 
     const handleAcceptTerms = async () => {
         try {
-            const response = await axios.post(
+            const response = await axios.put(
                 `${backendUrl}/api/user/update-term`,
                 { user_Term: true },
                 { headers: { token } }

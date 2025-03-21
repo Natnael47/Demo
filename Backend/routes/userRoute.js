@@ -56,29 +56,70 @@ userRouter.post("/login", loginUser);
  * @swagger
  * /api/user/check:
  *   get:
- *     summary: Check user term status
- *     description: Retrieves the term acceptance status for a user.
+ *     summary: Check if user agreed to terms
+ *     description: Checks whether the user has agreed to the terms and conditions required to participate in the lottery game.
  *     security:
  *       - BearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: userId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The ID of the user whose term status is being checked.
  *     responses:
  *       200:
- *         description: User term status retrieved.
+ *         description: User term acceptance status retrieved successfully.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 userTermStatus:
+ *                   type: boolean
+ *                 Id:
+ *                   type: string
+ *       404:
+ *         description: User not found.
+ *       500:
+ *         description: Internal server error.
  */
 userRouter.get("/check", auth_user, checkUserTerm);
 
 /**
  * @swagger
  * /api/user/update-term:
- *   post:
+ *   put:
  *     summary: Update user term status
- *     description: Updates the user's term acceptance status.
+ *     description: Updates the user's acceptance of terms and conditions. Since this is a new system, all users are assumed to have not agreed initially.
  *     security:
  *       - BearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               userId:
+ *                 type: string
+ *                 description: The ID of the user updating their term status.
+ *               user_Term:
+ *                 type: boolean
+ *                 description: The new acceptance status (true = agreed, false = not agreed).
  *     responses:
  *       200:
  *         description: Terms updated successfully.
+ *       400:
+ *         description: Invalid request body (e.g., user_Term is not a boolean).
+ *       404:
+ *         description: User not found.
+ *       500:
+ *         description: Internal server error.
  */
-userRouter.post("/update-term", auth_user, updateUserTerm);
+userRouter.put("/update-term", auth_user, updateUserTerm);
 
 /**
  * @swagger
