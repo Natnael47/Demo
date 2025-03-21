@@ -8,10 +8,8 @@ import {
   payment,
   registerUser,
   selectAndKeepLotteryWinner,
-  selectLotteryWinner,
   updateUserTerm,
 } from "../controller/user_Controller.js";
-import auth_user from "../middleWare/auth_user.js";
 
 const userRouter = express.Router();
 
@@ -41,19 +39,19 @@ userRouter.post("/login", loginUser);
 
 /**
  * @swagger
- * /api/user/check:
+ * /api/user/check-User-Term:
  *   get:
  *     summary: Check if user agreed to terms
  *     description: Checks whether the user has agreed to the terms and conditions required to participate in the lottery game.
  *     security:
  *       - BearerAuth: []
  *     parameters:
- *       - in: query
- *         name: userId
+ *       - in: header
+ *         name: token
  *         required: true
  *         schema:
  *           type: string
- *         description: The ID of the user whose term status is being checked.
+ *         description: JWT token to authorize and decode the user ID.
  *     responses:
  *       200:
  *         description: User term acceptance status retrieved successfully.
@@ -68,12 +66,14 @@ userRouter.post("/login", loginUser);
  *                   type: boolean
  *                 Id:
  *                   type: string
+ *       401:
+ *         description: Token not provided or invalid.
  *       404:
  *         description: User not found.
  *       500:
  *         description: Internal server error.
  */
-userRouter.get("/check-User-Term", auth_user, checkUserTerm);
+userRouter.get("/check-User-Term", checkUserTerm);
 
 /**
  * @swagger
@@ -83,6 +83,13 @@ userRouter.get("/check-User-Term", auth_user, checkUserTerm);
  *     description: Updates the user's acceptance of terms and conditions. Since this is a new system, all users are assumed to have not agreed initially.
  *     security:
  *       - BearerAuth: []
+ *     parameters:
+ *       - in: header
+ *         name: token
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: JWT token to authorize and decode the user ID.
  *     requestBody:
  *       required: true
  *       content:
@@ -90,9 +97,6 @@ userRouter.get("/check-User-Term", auth_user, checkUserTerm);
  *           schema:
  *             type: object
  *             properties:
- *               userId:
- *                 type: string
- *                 description: The ID of the user updating their term status.
  *               user_Term:
  *                 type: boolean
  *                 description: The new acceptance status (true = agreed, false = not agreed).
@@ -101,12 +105,14 @@ userRouter.get("/check-User-Term", auth_user, checkUserTerm);
  *         description: Terms updated successfully.
  *       400:
  *         description: Invalid request body (e.g., user_Term is not a boolean).
+ *       401:
+ *         description: Token not provided or invalid.
  *       404:
  *         description: User not found.
  *       500:
  *         description: Internal server error.
  */
-userRouter.put("/update-term", auth_user, updateUserTerm);
+userRouter.put("/update-term", updateUserTerm);
 
 /**
  * @swagger
@@ -119,18 +125,15 @@ userRouter.put("/update-term", auth_user, updateUserTerm);
  *       - Generates a lottery number for the user who agreed to participate.
  *     security:
  *       - BearerAuth: []
+ *     parameters:
+ *       - in: header
+ *         name: token
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: JWT token to authorize and decode the user ID.
  *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             required:
- *               - userId
- *             properties:
- *               userId:
- *                 type: string
- *                 description: The unique ID of the user making the payment.
+ *       required: false
  *     responses:
  *       200:
  *         description: Payment processed and lottery number generated successfully.
@@ -148,12 +151,14 @@ userRouter.put("/update-term", auth_user, updateUserTerm);
  *                 lottery_number:
  *                   type: string
  *                   example: "123456789012"
+ *       401:
+ *         description: Token not provided or invalid.
  *       400:
  *         description: Invalid request or payment failure.
  *       500:
  *         description: Internal server error.
  */
-userRouter.post("/payment", auth_user, payment);
+userRouter.post("/payment", payment);
 
 /**
  * @swagger
@@ -199,24 +204,19 @@ userRouter.post("/choose-winner", selectAndKeepLotteryWinner);
 
 /**
  * @swagger
- * /api/user/select-winner:
- *   get:
- *     summary: Select lottery winner
- *     description: Randomly selects a lottery winner from eligible tickets.
- *     responses:
- *       200:
- *         description: Winner selected successfully.
- */
-userRouter.get("/select-winner", selectLotteryWinner);
-
-/**
- * @swagger
  * /api/user/lottery-numbers:
  *   get:
  *     summary: Retrieve user's lottery numbers
- *     description: Fetches all lottery numbers associated with the authenticated user.
+ *     description: Fetches all lottery numbers associated with the authenticated user using the token in the headers.
  *     security:
  *       - BearerAuth: []
+ *     parameters:
+ *       - in: header
+ *         name: token
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Bearer token to authenticate and identify the user.
  *     responses:
  *       200:
  *         description: Successfully retrieved user's lottery numbers.
@@ -244,11 +244,67 @@ userRouter.get("/select-winner", selectLotteryWinner);
  *                         format: date-time
  *                         example: "2024-03-21T12:00:00Z"
  *       400:
- *         description: User ID is missing or invalid.
+ *         description: Token is missing or invalid.
  *       500:
  *         description: Internal server error.
  */
-userRouter.get("/lottery-numbers", auth_user, getUserLotteryNumbers);
+userRouter.get("/lottery-numbers", getUserLotteryNumbers);
+
+/**
+ * @swagger
+ * /api/user/notify-winner:
+ *   get:
+ *     summary: Notify and reward the lottery winner
+ *     description: Notifies the winner and processes their reward if they hold the winning lottery number, using the token in the headers for identification.
+ *     security:
+ *       - BearerAuth: []
+ *     parameters:
+ *       - in: header
+ *         name: token
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Bearer token to authenticate and identify the user.
+ *     responses:
+ *       200:
+ *         description: Winner notified successfully.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: "Congratulations! You are the winner."
+ *                 winnerDetails:
+ *                   type: object
+ *                   properties:
+ *                     userId:
+ *                       type: string
+ *                       example: "605c72b9f1d2c70015f87b4f"
+ *                     name:
+ *                       type: string
+ *                       example: "Jane Doe"
+ *                     phone:
+ *                       type: string
+ *                       example: "+251912345678"
+ *                     lotteryNumber:
+ *                       type: string
+ *                       example: "123456789012"
+ *                     rewardAmount:
+ *                       type: integer
+ *                       example: 100000
+ *       400:
+ *         description: Token is missing or invalid.
+ *       404:
+ *         description: User does not exist or did not win the lottery.
+ *       500:
+ *         description: Internal server error.
+ */
+userRouter.get("/notify-winner", notifyAndRewardWinner);
 
 /**
  * @swagger
@@ -295,54 +351,5 @@ userRouter.get("/lottery-numbers", auth_user, getUserLotteryNumbers);
  *         description: Internal server error.
  */
 userRouter.get("/all-lottery-numbers", getAllLotteryNumbersWithUsernames);
-
-/**
- * @swagger
- * /api/user/notify-winner:
- *   get:
- *     summary: Notify and reward the lottery winner
- *     description: Notifies the winner and processes their reward if they hold the winning lottery number.
- *     security:
- *       - BearerAuth: []
- *     responses:
- *       200:
- *         description: Winner notified successfully.
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                   example: true
- *                 message:
- *                   type: string
- *                   example: "Congratulations! You are the winner."
- *                 winnerDetails:
- *                   type: object
- *                   properties:
- *                     userId:
- *                       type: string
- *                       example: "605c72b9f1d2c70015f87b4f"
- *                     name:
- *                       type: string
- *                       example: "Jane Doe"
- *                     phone:
- *                       type: string
- *                       example: "+251912345678"
- *                     lotteryNumber:
- *                       type: string
- *                       example: "123456789012"
- *                     rewardAmount:
- *                       type: integer
- *                       example: 100000
- *       400:
- *         description: User ID is required but missing.
- *       404:
- *         description: User does not exist or did not win the lottery.
- *       500:
- *         description: Internal server error.
- */
-userRouter.get("/notify-winner", auth_user, notifyAndRewardWinner);
 
 export default userRouter;

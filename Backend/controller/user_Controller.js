@@ -41,28 +41,77 @@ const createToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: "1d" }); // Token valid for 1 day
 };
 
+// Utility function to decode token and return user ID
+const getUserIdFromToken = (token) => {
+  try {
+    // Decode the token using the JWT secret
+    const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
+    return decodedToken.id; // Return the user ID from the decoded token
+  } catch (error) {
+    throw new Error("Invalid or expired token."); // Throw error for invalid tokens
+  }
+};
+
 // Fetch User Term Status (True or False)
 const checkUserTerm = async (req, res) => {
   try {
-    const { userId } = req.body; // Get user ID from request body
-    const user = await usermodel.findById(userId); // Find user by ID
-    if (!user) {
-      return res.json({ success: false, message: "User not found" });
+    // Get token from headers
+    const { token } = req.headers;
+
+    if (!token) {
+      return res.json({
+        success: false,
+        message: "Token not provided. Authorization required.",
+      });
     }
 
-    // Check the user's term acceptance status as a boolean
-    const userTermStatus = user.user_Term; // Directly return the boolean value
+    let userId;
+    try {
+      // Use the reusable function to get the user ID
+      userId = getUserIdFromToken(token);
+    } catch (error) {
+      return res.json({ success: false, message: error.message });
+    }
+
+    const user = await usermodel.findById(userId); // Find user by ID in the database
+
+    if (!user) {
+      return res.json({ success: false, message: "User not found." });
+    }
+
+    // Return the user's term acceptance status
+    const userTermStatus = user.user_Term;
     return res.json({ success: true, userTermStatus, Id: userId });
   } catch (error) {
     console.error(error);
-    res.json({ success: false, message: "Error fetching user term status" });
+    return res.json({
+      success: false,
+      message: "Error fetching user term status.",
+    });
   }
 };
 
 // Update User Term Status
 const updateUserTerm = async (req, res) => {
-  const { userId, user_Term } = req.body;
+  const { user_Term } = req.body;
   try {
+    // Get token from headers
+    const { token } = req.headers;
+
+    if (!token) {
+      return res.json({
+        success: false,
+        message: "Token not provided. Authorization required.",
+      });
+    }
+
+    let userId;
+    try {
+      // Use the reusable function to get the user ID
+      userId = getUserIdFromToken(token);
+    } catch (error) {
+      return res.json({ success: false, message: error.message });
+    }
     // Validate the user_Term field
     if (typeof user_Term !== "boolean") {
       return res.json({
@@ -146,10 +195,26 @@ const registerUser = async (req, res) => {
 };
 
 const payment = async (req, res) => {
-  const { userId } = req.body;
   const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
   try {
+    // Get token from headers
+    const { token } = req.headers;
+
+    if (!token) {
+      return res.json({
+        success: false,
+        message: "Token not provided. Authorization required.",
+      });
+    }
+
+    let userId;
+    try {
+      // Use the reusable function to get the user ID
+      userId = getUserIdFromToken(token);
+    } catch (error) {
+      return res.json({ success: false, message: error.message });
+    }
     // Adjust the amount to meet Stripe's minimum (e.g., 300 ETB)
     const amountInETB = 300; // Adjust as needed
     const amountInCents = amountInETB * 100; // Convert ETB to cents
@@ -237,8 +302,24 @@ export const selectLotteryWinner = async (req, res) => {
 
 // Collect Lottery Numbers by User ID
 const getUserLotteryNumbers = async (req, res) => {
-  const { userId } = req.body; // Get user ID from request body
   try {
+    // Get token from headers
+    const { token } = req.headers;
+
+    if (!token) {
+      return res.json({
+        success: false,
+        message: "Token not provided. Authorization required.",
+      });
+    }
+
+    let userId;
+    try {
+      // Use the reusable function to get the user ID
+      userId = getUserIdFromToken(token);
+    } catch (error) {
+      return res.json({ success: false, message: error.message });
+    }
     // Validate if userId is provided
     if (!userId) {
       return res.json({ success: false, message: "User ID is required" });
@@ -392,7 +473,23 @@ export const selectAndKeepLotteryWinner = async (req, res) => {
 // Function to notify and reward the lottery winner
 export const notifyAndRewardWinner = async (req, res) => {
   try {
-    const { userId } = req.body; // Get user ID from request
+    // Get token from headers
+    const { token } = req.headers;
+
+    if (!token) {
+      return res.json({
+        success: false,
+        message: "Token not provided. Authorization required.",
+      });
+    }
+
+    let userId;
+    try {
+      // Use the reusable function to get the user ID
+      userId = getUserIdFromToken(token);
+    } catch (error) {
+      return res.json({ success: false, message: error.message });
+    }
 
     if (!userId) {
       return res.status(400).json({
